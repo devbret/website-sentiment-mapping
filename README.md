@@ -1,4 +1,4 @@
-# Website Sentiment Mapping
+# Website Internal Links And Sentiment Mapping
 
 ![Preview Of Resulting Visualization](https://hosting.photobucket.com/images/i/bernhoftbret/sentiment.png)
 
@@ -15,8 +15,8 @@ Use Python to crawl a specific number of pages from a given domain. Then use D3 
 
 1. Install the above programs.
 2. Open a shell window (For Windows open PowerShell, for MacOS open Terminal & for Linux open your distro's terminal emulator).
-3. Clone this repository using `git` by running the following command; `git clone https://github.com/devbret/website-senitment-mapping`.
-4. Navigate to the repo's directory by running; `cd website-senitment-mapping`.
+3. Clone this repository using `git` by running the following command; `git clone https://github.com/devbret/website-sentiment-mapping`.
+4. Navigate to the repo's directory by running; `cd website-sentiment-mapping`.
 5. Install the needed dependencies for running the script by running; `pip install -r requirements.txt`.
 6. Edit the app.py file on line 78, to include the website that you would like to visualize.
 7. Run the script with the command `python3 app.py`.
