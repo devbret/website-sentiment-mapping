@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapping A Website's Internal Links And Sentiment</title>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <style>
+            * {
+                font-family: 'Arial', sans-serif;
+            }
+            body {
+                overflow: hidden;
+                margin: 0;
+                background: #f0f0f0;
+            }
+            .link {
+                stroke: #bbb;
+                stroke-opacity: 0.6;
+                stroke-width: 2px;
+            }
+            .node {
+                stroke: #666;
+                stroke-width: 1.5px;
+                cursor: pointer;
+            }
+            .tooltip {
+                position: absolute;
+                text-align: center;
+                padding: 8px 10px;
+                font-size: 13px;
+                background: #ffffff;
+                border: 1px solid #ddd;
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+                pointer-events: none;
+                transition: opacity 0.2s;
+                border-radius: 4px;
+                opacity: 0;
+            }
+            svg {
+                border: none;
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="tooltip" class="tooltip"></div>
+        <script>
+            d3.json('links.json').then(function (site_structure) {
+                const nodes = [];
+                const links = [];
+                Object.keys(site_structure).forEach((source) => {
+                    const sentimentScores = site_structure[source].sentiment_analysis.map((s) => s.polarity);
+                    const avgSentiment = sentimentScores.length > 0 ? d3.mean(sentimentScores) : 0;
+                    nodes.push({
+                        id: source,
+                        title: site_structure[source].title,
+                        avgSentiment,
+                        sentiment_analysis: site_structure[source].sentiment_analysis,
+                    });
+
+                    site_structure[source].links.forEach((target) => {
+                        links.push({ source, target });
+                        if (!nodes.some((node) => node.id === target)) {
+                            const sentimentScoresTarget = site_structure[target]?.sentiment_analysis.map((s) => s.polarity) || [];
+                            const avgSentimentTarget = sentimentScoresTarget.length > 0 ? d3.mean(sentimentScoresTarget) : 0;
+                            nodes.push({
+                                id: target,
+                                title: site_structure[target]?.title || 'No Title Found',
+                                avgSentiment: avgSentimentTarget,
+                                sentiment_analysis: site_structure[target]?.sentiment_analysis || [],
+                            });
+                        }
+                    });
+                });
+
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
+                const svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+                const container = svg.append('g');
+
+                const zoomHandler = d3.zoom().on('zoom', (event) => container.attr('transform', event.transform));
+                svg.call(zoomHandler).call(zoomHandler.transform, d3.zoomIdentity);
+
+                const minSentiment = d3.min(nodes, (d) => d.avgSentiment);
+                const maxSentiment = d3.max(nodes, (d) => d.avgSentiment);
+
+                const normalizedSentiment = d3.scaleLinear().domain([minSentiment, maxSentiment]).range([0, 1]);
+
+                const color = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 1]);
+
+                const simulation = d3
+                    .forceSimulation(nodes)
+                    .force(
+                        'link',
+                        d3
+                            .forceLink(links)
+                            .id((d) => d.id)
+                            .distance(193)
+                    )
+                    .force('charge', d3.forceManyBody().strength(-123))
+                    .force('center', d3.forceCenter(width / 2, height / 2));
+
+                const link = container.append('g').attr('class', 'links').selectAll('line').data(links).enter().append('line').attr('class', 'link');
+
+                const node = container
+                    .append('g')
+                    .attr('class', 'nodes')
+                    .selectAll('circle')
+                    .data(nodes)
+                    .enter()
+                    .append('circle')
+                    .attr('class', 'node')
+                    .attr('r', 13)
+                    .attr('fill', (d) => color(normalizedSentiment(d.avgSentiment)))
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 2)
+                    .on('mouseover', mouseover)
+                    .on('mouseout', mouseout)
+                    .on('click', (event, d) => window.open(d.id, '_blank'))
+                    .call(d3.drag().on('start', dragstarted).on('drag', dragged).on('end', dragended));
+
+                simulation.on('tick', () => {
+                    link.attr('x1', (d) => d.source.x)
+                        .attr('y1', (d) => d.source.y)
+                        .attr('x2', (d) => d.target.x)
+                        .attr('y2', (d) => d.target.y);
+                    node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
+                });
+
+                function mouseover(event, d) {
+                    const tooltipContent = `<strong>${d.title}</strong><br>ID: ${d.id}<br>Average Sentiment: ${d.avgSentiment.toFixed(2)}`;
+                    d3.select('#tooltip')
+                        .style('opacity', 1)
+                        .html(tooltipContent)
+                        .style('left', `${event.pageX}px`)
+                        .style('top', `${event.pageY - 28}px`);
+                    node.attr('opacity', 0.1);
+                    link.attr('opacity', 0.1);
+                    node.filter((n) => n === d || links.some((l) => (l.source === d && l.target === n) || (l.target === d && l.source === n))).attr(
+                        'opacity',
+                        1
+                    );
+                    link.filter((l) => l.source === d || l.target === d).attr('opacity', 1);
+                }
+
+                function mouseout() {
+                    d3.select('#tooltip').style('opacity', 0);
+                    node.attr('opacity', 1);
+                    link.attr('opacity', 1);
+                }
+
+                function dragstarted(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                }
+
+                function dragended(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }
+            });
+        </script>
+    </body>
+</html>
