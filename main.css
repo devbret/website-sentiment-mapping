@@ -1,0 +1,37 @@
+* {
+  font-family: "Arial", sans-serif;
+}
+body {
+  overflow: hidden;
+  margin: 0;
+  background: #f0f0f0;
+}
+.link {
+  stroke: #bbb;
+  stroke-opacity: 0.6;
+  stroke-width: 2px;
+}
+.node {
+  stroke: #666;
+  stroke-width: 1.5px;
+  cursor: pointer;
+}
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  transition: opacity 0.2s;
+  border-radius: 4px;
+  opacity: 0;
+}
+svg {
+  border: none;
+  display: block;
+  width: 100%;
+  height: auto;
+}
