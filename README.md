@@ -10,7 +10,7 @@ A full-stack web crawler and sentiment visualization tool which recursively craw
 
 ## Set Up Instructions
 
-Below are the steps needed to install and use this application.
+Below are the steps needed to install and use this application on a Linux machine.
 
 ### Programs Needed
 
@@ -24,14 +24,26 @@ Below are the steps needed to install and use this application.
 
 2. Open a terminal
 
-3. Clone this repository using `git` by running the following command: `git clone git@github.com:devbret/website-sentiment-mapping.git`
+3. Clone this repository using `git` by running: `git clone git@github.com:devbret/website-sentiment-mapping.git`
 
-4. Navigate to the repo's directory by running: `cd website-sentiment-mapping`
+4. Navigate to the repo's directory: `cd website-sentiment-mapping`
 
-5. Install the needed dependencies for launching this application by running: `pip install -r requirements.txt`
+5. Install the needed dependencies for launching this application: `pip install -r requirements.txt`
 
 6. Edit the app.py file on line 78, to include the website you would like to visualize
 
-7. Run the script with the command `python3 app.py`
+7. Run the script with the following command `python3 app.py`
 
-8. To view the website's connections in the index.html file you will need to open a local web server by running: `python3 -m http.server`
+8. To view the website's connections in the `index.html` file you will need to open a local web server: `python3 -m http.server`
+
+## Other Considerations
+
+This project repo is intended to demonstrate an ability to do the following:
+
+- Crawl a website recursively to map its internal link structure into a navigable graph dataset
+
+- Perform sentence-level sentiment analysis across all discovered pages
+
+- Integrate backend data collection with frontend visualization into a cohesive analysis pipeline
+
+If you have any questions or would like to collaborate, please reach out either on GitHub or via [my website](https://bretbernhoft.com/).
