@@ -30,7 +30,7 @@ Below are the steps needed to install and use this application on a Linux machin
 
 5. Install the needed dependencies for launching this application: `pip install -r requirements.txt`
 
-6. Edit the app.py file on line 78, to include the website you would like to visualize
+6. Edit the `app.py` file on line 78 to include the website you would like to visualize
 
 7. Run the script with the following command `python3 app.py`
 
