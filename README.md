@@ -1,14 +1,18 @@
-# Website Internal Links And Sentiment Mapping
+# Website Sentiment Mapping
 
 ![Preview Of Resulting Visualization](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/00b04fba-5ad4-4618-b602-9a1be0343e4c.png)
 
-Crawls a website’s internal pages, performs sentence-level sentiment analysis and visualizes the site structure as an interactive D3 network graph with nodes being color-coded to reflect sentiment.
+Crawl a website's internal pages, perform sentence-level sentiment analysis and visualize the site structure as an interactive D3 network graph with nodes being color-coded to reflect sentiment.
 
-## Overview
+## Application Overview
 
-A full-stack web crawler and sentiment visualization tool which recursively crawls a website’s internal links using Python, extracts page text, performs sentence-level sentiment analysis with TextBlob and saves the site structure as a JSON file. The frontend then uses D3.js to render this data as an interactive network graph where each page is a node, links represent internal hyperlinks and node color reflects the page’s average sentiment. Allowing users to zoom, drag, hover for details, highlight connected pages and click nodes to open the corresponding URL in a new tab.
+The Python script crawls a target website, extracting page titles, internal links and performing sentiment scoring for each page's text content. It outputs this structured data as `links.json`, which includes nodes, edges and associated sentiment metrics.
 
-## Set Up Instructions
+And the JavaScript code uses D3.js to render this data as an interactive network graph, where each node represents a webpage colored by its average sentiment score. Users can zoom, pan and drag nodes to explore connections between pages. Clicking a node opens it in a browser tab.
+
+Ultimately this application provides an interesting way to analyze website sentiment distribution and structural patterns, useful for SEO audits, user experience research or brand perception studies.
+
+## Basic Setup Instructions
 
 Below are the steps needed to install and use this application on a Linux machine.
 
@@ -24,26 +28,38 @@ Below are the steps needed to install and use this application on a Linux machin
 
 2. Open a terminal
 
-3. Clone this repository using `git` by running: `git clone git@github.com:devbret/website-sentiment-mapping.git`
+3. Clone this repository: `git clone git@github.com:devbret/website-sentiment-mapping.git`
 
 4. Navigate to the repo's directory: `cd website-sentiment-mapping`
 
-5. Install the needed dependencies for launching this application: `pip install -r requirements.txt`
+5. Create a virtual environment: `python3 -m venv venv`
 
-6. Edit the `app.py` file on line 78 to include the website you would like to visualize
+6. Activate your virtual environment: `source venv/bin/activate`
 
-7. Run the script with the following command `python3 app.py`
+7. Install the needed dependencies: `pip install -r requirements.txt`
 
-8. To view the website's connections in the `index.html` file you will need to open a local web server: `python3 -m http.server`
+8. Edit `app.py` on line 78 to include target website
+
+9. Run the script: `python3 app.py`
+
+10. Launch an HTTP server: `python3 -m http.server`
+
+11. Visit the AI chat interface in your browser: `http://localhost:8000`
+
+12. When finished, stop the HTTP server: `Ctrl + C`
+
+13. Exit the virtual environment: `deactivate`
 
 ## Other Considerations
 
 This project repo is intended to demonstrate an ability to do the following:
 
-- Crawl a website recursively to map its internal link structure into a navigable graph dataset
+- Automatically map a website's structure by crawling pages and recording their hierarchical links
 
-- Perform sentence-level sentiment analysis across all discovered pages
+- Analyze the sentiment of each page’s text content, assigning polarity scores to sentences for emotional tone assessment
 
-- Integrate backend data collection with frontend visualization into a cohesive analysis pipeline
+- Visualize a given website as an interactive network graph, where nodes represent pages colored by average sentiment
+
+- Enable users to explore connections, zoom into details and hover over elements to reveal real-time sentiment metrics and page information
 
 If you have any questions or would like to collaborate, please reach out either on GitHub or via [my website](https://bretbernhoft.com/).
