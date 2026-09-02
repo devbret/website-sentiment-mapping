@@ -38,7 +38,7 @@ Below are the steps needed to install and use this application on a Linux machin
 
 7. Install the needed dependencies: `pip install -r requirements.txt`
 
-8. Edit `app.py` on line 78 to include target website
+8. Edit `app.py` on line 82 to include target website
 
 9. Run the script: `python3 app.py`
 
