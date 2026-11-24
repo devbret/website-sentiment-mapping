@@ -2,3 +2,4 @@
 venv/
 links.json
 webpage_sentiment.log
+__pycache__/
